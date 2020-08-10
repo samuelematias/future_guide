@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,10 +15,6 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            runMultipleFutures();
-          },
-
           //The difference between  using THEN
           // and the using async/await, is that
           // the function will not wait for the
@@ -28,6 +22,38 @@ class MyApp extends StatelessWidget {
           // It does not wait for the execution
           // of a Future to finish
           // before completing the function.
+
+          // With time out (String)
+          onPressed: () async {
+            // This function allows you to do
+            // is to return an actual value with the future
+            // that you are expecting,
+            // that's where your future value
+            // won't be now aftter the execution
+            // so you can still have a value based
+            // on the timed out.
+            // The time out its become pretty useful if you want
+            // to do things like retries,
+            // you can return your retry account
+            // and you can continually trying until
+            // you have a exhaust your retries.
+            var futureValue = await myStringTimeOutFuture()
+                .timeout(Duration(seconds: 2), onTimeout: () {
+              print('This future has timed out');
+              return 'This is my timed out value';
+            });
+            print('Future completed: $futureValue');
+          },
+
+          // With time out (download files)
+          // onPressed: () async {
+          //   runTimeout();
+          // },
+
+          // With multiple futures
+          // onPressed: () {
+          //   runMultipleFutures();
+          // },
 
           // With error handling (async/wait catchError)
           // onPressed: () {
@@ -80,28 +106,50 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  // Future to run
-  Future<bool> downloadFile(int id, int duration) async {
-    await Future.delayed(Duration(seconds: duration));
-    print('Delay complete for Future $id');
-    return true;
+  // With time out (String)
+  Future<String> myStringTimeOutFuture() async {
+    print('future started');
+    await Future.delayed(Duration(seconds: 5));
+    return 'future complete';
   }
 
-// Running multiple futures
-  Future runMultipleFutures() async {
-    // Create list of multiple futures
-    var futures = List<Future>();
-    for (int i = 0; i < 10; i++) {
-      futures.add(downloadFile(i, Random(i).nextInt(10)));
-    }
+  // With time out (download files)
+  // Future<bool> myTimeOutFuture(int id, int duration) async {
+  //   await Future.delayed(Duration(seconds: duration));
+  //   print('Delay complete for Future $id');
+  //   return true;
+  // }
 
-    print('start downloads');
-    // Waif for all futures to complete
-    await Future.wait(futures);
+  // With time out (download files)
+  // Future runTimeout() async {
+  //   await myTimeOutFuture(0, 10).timeout(Duration(seconds: 2), onTimeout: () {
+  //     print('0 timed out');
+  //     return false;
+  //   });
+  // }
 
-    // We're done with all futures execution
-    print('All the futures has completed');
-  }
+  // Future to run multiple futures
+  // Future<bool> downloadFile(int id, int duration) async {
+  //   await Future.delayed(Duration(seconds: duration));
+  //   print('Delay complete for Future $id');
+  //   return true;
+  // }
+
+  // Running multiple futures
+  // Future runMultipleFutures() async {
+  //   // Create list of multiple futures
+  //   var futures = List<Future>();
+  //   for (int i = 0; i < 10; i++) {
+  //     futures.add(downloadFile(i, Random(i).nextInt(10)));
+  //   }
+
+  //   print('start downloads');
+  //   // Waif for all futures to complete
+  //   await Future.wait(futures);
+
+  //   // We're done with all futures execution
+  //   print('All the futures has completed');
+  // }
 
   // With error handling (throw Exception)
   // Future<String> myFuture() async {
