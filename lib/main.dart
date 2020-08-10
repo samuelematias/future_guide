@@ -15,31 +15,57 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
-          //With THEN
+          //The difference between  using THEN
+          // and the using async/await, is that
+          // the function will not wait for the
+          // Future to complete to continue executing.
+          // It does not wait for the execution
+          // of a Future to finish
+          // before completing the function.
+
+          // With error handling (async/wait catchError)
           onPressed: () {
             print('Future started - THEN');
-            //The difference between this (using THEN)
-            // and the async/await, is that
-            // the function will not wait for the
-            // Future to complete to continue executing.
-            // It does not wait for the execution
-            // of a Future to finish
-            // before completing the function.
-            myFuture().then((value) {
-              print('Future finished - THEN');
+            var value = myFuture().catchError((onError) {
+              print(onError);
             });
             print('Future now here');
           },
 
+          // With error handling (catchError)
+          // onPressed: () {
+          //   print('Future started - THEN');
+          //   myFuture().then((value) {
+          //     print('Future finished - THEN');
+          //   }).catchError((onError) {
+          //     print(onError);
+          //   });
+          //   print('Future now here');
+          // },
+
+          // With error handling (onError)
+          // onPressed: () {
+          //   print('Future started - THEN');
+          //   myFuture().then((value) {
+          //     print('Future finished - THEN');
+          //   }, onError: (error) {
+          //     print(error);
+          //   });
+          //   print('Future now here');
+          // },
+
+          // With THEN
+          // onPressed: () {
+          //   print('Future started - THEN');
+          //   myFuture().then((value) {
+          //     print('Future finished - THEN');
+          //   });
+          //   print('Future now here');
+          // },
+
           // With async/await
           // onPressed: () async {
           //   print('Future started');
-          //   // You use AWAIT option, when you want
-          //   // to wait for the future to complete
-          //   // before continuing the execution.
-          //   // The dart then call is used when your
-          //   // code can continue executing after
-          //   // the future has been called.
           //   var futureValue = await myFuture();
           //   print(futureValue);
           // },
@@ -48,11 +74,23 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  // With async/await
+  // With error handling (throw Exception)
   Future<String> myFuture() async {
     await Future.delayed(Duration(seconds: 1));
-    return 'This future is complete';
+    throw Exception('Exception form error.');
   }
+
+  // With error handling (Future.error)
+  // Future<String> myFuture() async {
+  //   await Future.delayed(Duration(seconds: 1));
+  //   return Future.error('Error from return');
+  // }
+
+  // With async/await
+  // Future<String> myFuture() async {
+  //   await Future.delayed(Duration(seconds: 1));
+  //   return 'This future is complete';
+  // }
 
   // Without async/await
   //   Future<String> myFuture() {
