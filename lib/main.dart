@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,6 +17,10 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            runMultipleFutures();
+          },
+
           //The difference between  using THEN
           // and the using async/await, is that
           // the function will not wait for the
@@ -24,13 +30,13 @@ class MyApp extends StatelessWidget {
           // before completing the function.
 
           // With error handling (async/wait catchError)
-          onPressed: () {
-            print('Future started - THEN');
-            var value = myFuture().catchError((onError) {
-              print(onError);
-            });
-            print('Future now here');
-          },
+          // onPressed: () {
+          //   print('Future started - THEN');
+          //   var value = myFuture().catchError((onError) {
+          //     print(onError);
+          //   });
+          //   print('Future now here');
+          // },
 
           // With error handling (catchError)
           // onPressed: () {
@@ -74,11 +80,34 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  // With error handling (throw Exception)
-  Future<String> myFuture() async {
-    await Future.delayed(Duration(seconds: 1));
-    throw Exception('Exception form error.');
+  // Future to run
+  Future<bool> downloadFile(int id, int duration) async {
+    await Future.delayed(Duration(seconds: duration));
+    print('Delay complete for Future $id');
+    return true;
   }
+
+// Running multiple futures
+  Future runMultipleFutures() async {
+    // Create list of multiple futures
+    var futures = List<Future>();
+    for (int i = 0; i < 10; i++) {
+      futures.add(downloadFile(i, Random(i).nextInt(10)));
+    }
+
+    print('start downloads');
+    // Waif for all futures to complete
+    await Future.wait(futures);
+
+    // We're done with all futures execution
+    print('All the futures has completed');
+  }
+
+  // With error handling (throw Exception)
+  // Future<String> myFuture() async {
+  //   await Future.delayed(Duration(seconds: 1));
+  //   throw Exception('Exception form error.');
+  // }
 
   // With error handling (Future.error)
   // Future<String> myFuture() async {
